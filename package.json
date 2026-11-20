@@ -1,0 +1,26 @@
+{
+  "name": "ftr-secretaria-genai",
+  "version": "1.0.0",
+  "scripts": {
+    "run:gemini": "node src/gemini.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.21.0",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@12.21.0",
+  "type": "module",
+  "dependencies": {
+    "@google/genai": "^3.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2"
+  }
+}
