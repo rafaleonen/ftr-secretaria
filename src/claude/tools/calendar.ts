@@ -1,37 +1,38 @@
-import { Type } from "@google/genai";
-import { ITool } from "../types/tool";
-import { today } from "../mocks/days";
-import { calendar } from "../mocks/calendar";
-import {
+import type { IClaudeTool } from "../../types/tool.ts";
+import { today } from "../../mocks/days.ts";
+import { calendar } from "../../mocks/calendar.ts";
+import type {
   IDateInputDTO,
   IDateOutputDTO,
   IEventInputDTO,
   IEventOutputDTO,
   IRescheduleEventInputDTO,
-} from "../types/calendar";
+} from "../../types/calendar.ts";
 
-const getTodayDate: ITool<void, IDateOutputDTO> = {
+const getTodayDate: IClaudeTool<void, IDateOutputDTO> = {
   function: () => {
     return today;
   },
   declaration: {
     name: "getTodayDate",
     description: "Retorna a data de hoje no formato yyyy-mm-dd",
+    // No Claude, input_schema é obrigatório mesmo quando não há parâmetros
+    input_schema: { type: "object", properties: {} },
   },
 };
 
-const getEvents: ITool<IDateInputDTO, IEventOutputDTO[]> = {
+const getEvents: IClaudeTool<IDateInputDTO, IEventOutputDTO[]> = {
   function: ({ date }) => {
     return calendar[date] ?? [];
   },
   declaration: {
     name: "getEvents",
     description: "Retorna os eventos do calendário para um determinado dia.",
-    parameters: {
-      type: Type.OBJECT,
+    input_schema: {
+      type: "object",
       properties: {
         date: {
-          type: Type.STRING,
+          type: "string",
           description:
             "A data para qual queremos retornar os eventos, no formato yyyy-mm-dd",
         },
@@ -41,13 +42,13 @@ const getEvents: ITool<IDateInputDTO, IEventOutputDTO[]> = {
   },
 };
 
-const scheduleEvent: ITool<IEventInputDTO, string> = {
+const scheduleEvent: IClaudeTool<IEventInputDTO, string> = {
   function: ({ time, title, date, attendees }) => {
     const eventList = calendar[date] ?? [];
     eventList.push({
       title,
       time,
-      attendees,
+      attendees: attendees ?? [],
     });
 
     calendar[date] = eventList;
@@ -57,25 +58,25 @@ const scheduleEvent: ITool<IEventInputDTO, string> = {
   declaration: {
     name: "scheduleEvent",
     description: "Marca um novo evento na agenda",
-    parameters: {
-      type: Type.OBJECT,
+    input_schema: {
+      type: "object",
       properties: {
         title: {
-          type: Type.STRING,
+          type: "string",
           description: "O título do evento",
         },
         date: {
-          type: Type.STRING,
+          type: "string",
           description: "A data do evento, no formato yyyy-mm-dd",
         },
         time: {
-          type: Type.STRING,
+          type: "string",
           description: "A hora do evento, no formato HH:MM",
         },
         attendees: {
-          type: Type.ARRAY,
-          items: { type: Type.STRING },
-          description: "A hora do evento, no formato HH:MM",
+          type: "array",
+          items: { type: "string" },
+          description: "Os nomes dos participantes do evento",
         },
       },
       required: ["title", "date", "time"],
@@ -83,36 +84,34 @@ const scheduleEvent: ITool<IEventInputDTO, string> = {
   },
 };
 
-const rescheduleEvent: ITool<IRescheduleEventInputDTO, string> = {
+const rescheduleEvent: IClaudeTool<IRescheduleEventInputDTO, string> = {
   function: ({ date, newTime, title }) => {
-    const eventList = calendar[date];
+    const event = calendar[date]?.find((event) => event.title === title);
 
-    if (!Array.isArray(eventList)) {
+    if (!event) {
       return "Evento não encontrado";
     }
 
-    const index = eventList.findIndex((event) => event.title === title);
-
-    calendar[date][index].time = newTime;
+    event.time = newTime;
 
     return "Evento alterado com sucesso";
   },
   declaration: {
     name: "rescheduleEvent",
-    description: "Marca um novo evento na agenda",
-    parameters: {
-      type: Type.OBJECT,
+    description: "Altera o horário de um evento existente na agenda",
+    input_schema: {
+      type: "object",
       properties: {
         title: {
-          type: Type.STRING,
+          type: "string",
           description: "O título do evento",
         },
         date: {
-          type: Type.STRING,
+          type: "string",
           description: "A data do evento, no formato yyyy-mm-dd",
         },
         newTime: {
-          type: Type.STRING,
+          type: "string",
           description: "A nova hora do evento, no formato HH:MM",
         },
       },

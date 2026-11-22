@@ -1,9 +1,9 @@
 import { Type } from "@google/genai";
-import { emails } from "../mocks/email";
-import { IEmails, IInboxInputDTO } from "../types/email";
-import { ITool } from "../types/tool";
+import { emails } from "../../mocks/email.ts";
+import type { IEmails, IInboxInputDTO } from "../../types/email.ts";
+import type { IGeminiTool } from "../../types/tool.ts";
 
-const getEmail: ITool<void, IEmails> = {
+const getEmail: IGeminiTool<void, IEmails> = {
   function: () => {
     return emails;
   },
@@ -13,7 +13,7 @@ const getEmail: ITool<void, IEmails> = {
   },
 };
 
-const sendEmail: ITool<IInboxInputDTO, string> = {
+const sendEmail: IGeminiTool<IInboxInputDTO, string> = {
   function: ({ contact, message }) => {
     console.log(`**Email enviado para ${contact}: ${message}`);
 

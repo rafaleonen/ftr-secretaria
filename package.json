@@ -1,8 +1,13 @@
 {
-  "name": "ftr-secretaria-genai",
+  "name": "ftr-secretaria",
   "version": "1.0.0",
   "scripts": {
-    "run:gemini": "node src/gemini.ts"
+    "chat:gemini": "node --env-file=.env src/gemini/main.ts",
+    "chat:claude": "node --env-file=.env src/claude/main.ts",
+    "chat": "node src/ai-sdk/main.ts",
+    "mcp:stdio": "node src/mcp/stdio/server.ts",
+    "mcp:http": "node src/mcp/http/server.ts",
+    "mcp": "node src/mcp/http/client.ts"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +22,14 @@
   "packageManager": "pnpm@12.21.0",
   "type": "module",
   "dependencies": {
-    "@google/genai": "^3.6.1"
+    "@anthropic-ai/sdk": "^1.12.0",
+    "@google/genai": "^3.6.1",
+    "@modelcontextprotocol/client": "^2.4.0",
+    "@modelcontextprotocol/node": "^2.1.2",
+    "@modelcontextprotocol/server": "^2.4.0",
+    "ai": "^7.0.179",
+    "ai-sdk-provider-claude-code": "^4.4.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",

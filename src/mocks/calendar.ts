@@ -1,4 +1,4 @@
-import { ICalendar } from "../types/calendar";
+import type { ICalendar } from "../types/calendar.ts";
 
 export const calendar: ICalendar = {
   "2025-04-29": [

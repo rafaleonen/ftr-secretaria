@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "secretaria": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "src/mcp/stdio/server.ts"
+      ],
+      "env": {}
+    }
+  }
+}

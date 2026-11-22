@@ -1,4 +1,4 @@
-import { IEmails } from "../types/email";
+import type { IEmails } from "../types/email.ts";
 
 export const emails: IEmails = [
   {
